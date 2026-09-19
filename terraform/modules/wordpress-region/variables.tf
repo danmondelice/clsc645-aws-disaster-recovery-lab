@@ -1,4 +1,12 @@
 variable "name" { type = string }
+variable "availability_zones" {
+  description = "Two AZ names selected for this Region. Explicit values avoid requiring DescribeAvailabilityZones in restricted student accounts."
+  type        = list(string)
+  validation {
+    condition     = length(var.availability_zones) == 2
+    error_message = "Provide exactly two availability zones."
+  }
+}
 variable "vpc_cidr" { type = string }
 variable "desired_count" { type = number }
 variable "db_password" {

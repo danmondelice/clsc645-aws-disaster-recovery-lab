@@ -53,6 +53,8 @@ with Decimal, rather than estimated mentally. ECS/ELB offer publication date:
 
 ## Next checks after authentication
 
-Selected account: 003643568742 (`StudentAdminAccess-003643568742`). AWS SSO authentication completed, but GetRoleCredentials returned `ForbiddenException: No access`; no STS identity or regional preflight could be obtained. The account administrator/course IAM assignment must grant this user the StudentAdminAccess role, or the user must select an account where that role is assigned.
+The first selected account, 003643568742 (`StudentAdminAccess-003643568742`), returned `ForbiddenException: No access`. The account administrator/course IAM assignment must grant that user the StudentAdminAccess role, or the user must select an account where that role is assigned. The lab was switched to account 382352119953 (`school645`), where SSO access succeeded as `AWSReservedSSO_StudentAdminAccess`.
 
-After access is corrected, inspect both Regions for matching resources and quota/engine availability; create an ignored saved Terraform plan; review actual changes and service limitations. Stop before apply. Account permissions are currently unverified.
+The switched account has a 30-vCPU Fargate quota and no existing VPCs in us-east-1. MariaDB 10.11.13 is available in us-east-1. An explicit identity policy deny prevents `rds:DescribeDBEngineVersions` in us-west-2, and the same restriction blocked `ec2:DescribeAvailabilityZones` there. The environment now uses explicit `us-east-1a/us-east-1b` and `us-west-2a/us-west-2b` inputs so the plan does not require AZ discovery; verify those AZs are enabled before apply.
+
+The live read-only plan succeeded after that adjustment: **100 to add, 0 to change, 0 to destroy**. It is saved locally at `/tmp/clsc645-dr.tfplan` and is not in Git. The plan contains no access-key pattern. Review actual changes and service limitations; stop before apply.

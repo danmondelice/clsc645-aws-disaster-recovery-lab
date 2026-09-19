@@ -4,9 +4,8 @@ terraform {
   }
 }
 data "aws_region" "current" {}
-data "aws_availability_zones" "available" { state = "available" }
 locals {
-  azs    = slice(data.aws_availability_zones.available.names, 0, 2)
+  azs    = var.availability_zones
   efs_id = var.restored_efs_id != null ? var.restored_efs_id : aws_efs_file_system.wordpress.id
 }
 # Two AZs retain the ALB topology. Public task ENIs avoid NAT hourly charges;
