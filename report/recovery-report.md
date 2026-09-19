@@ -3,7 +3,11 @@
 **Course:** CLSC 645 Cloud Infrastructure Planning and Design
 **Author:** [Student name]
 **Date:** [Submission date]
-**Status:** Report template; implementation prepared, deployment and measurements pending.
+**Status:** Implementation and validation package complete; primary deployment
+verified in us-east-1. The selected student account denied required us-west-2
+operations, so regional recovery measurements remain pending. See
+[live deployment results](deployment-results.md) and do not present the intended
+DR diagrams as evidence of deployed resources.
 
 ## 1. Purpose and recovery objectives
 

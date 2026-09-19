@@ -1,7 +1,10 @@
 # Implementation validation
 
-Validation performed locally on 2026-09-18 with Terraform 1.16.0, AWS provider
-5.100.0 and random provider 3.7.2. No live AWS plan or apply was run.
+Validation performed locally and against a live account on 2026-09-18 with
+Terraform 1.16.0, AWS provider 5.100.0 and random provider 3.7.2. The live plan
+was reviewed and the approved apply partially completed: the primary us-east-1
+stack is deployed, while explicit account denies prevented the us-west-2 stack.
+See [deployment results](../report/deployment-results.md).
 
 | Check | Result |
 | --- | --- |
@@ -13,7 +16,7 @@ Validation performed locally on 2026-09-18 with Terraform 1.16.0, AWS provider
 | Bash syntax checks on original and added scripts | Pass |
 | Baseline and course script hash verification | Pass; originals unchanged |
 | Requested credential/state ignore paths | Pass |
-| AWS access-key pattern scan of source | No matches |
+| AWS access-key pattern scan of source and reviewed plan | No matches |
 
 Mock plan cases: domain-free defaults; rejection of unverified DNS; verified DNS;
 restricted-account backup toggles; destination RDS/EFS restoration with optional
@@ -32,7 +35,8 @@ example database password is reference material only, never used by enhanced cod
 
 ## Remaining runtime checks
 
-- Review real plan, resource costs and account/Region/engine/image availability.
+- Obtain permission for the denied us-west-2 actions, refresh SSO, and review the
+  remaining recovery plan before retrying.
 - Apply only after separate authorization; verify initial WordPress setup and EFS.
 - Confirm SNS subscriptions, dashboard metrics and actual alarm transitions.
 - Verify S3 replication bytes/versions, RDS destination backups and EFS copies.
