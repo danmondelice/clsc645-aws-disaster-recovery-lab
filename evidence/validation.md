@@ -37,9 +37,11 @@ example database password is reference material only, never used by enhanced cod
 
 - Verify initial WordPress setup and EFS from an AWS-connected client.
 - Confirm SNS subscriptions, dashboard metrics and actual alarm transitions.
-- Verify S3 replication bytes/versions, RDS destination backups and EFS copies.
+- S3 CRR object replication and RDS automated-backup replication were verified;
+  EFS recovery-point creation still requires a scheduled or on-demand backup.
 - Restore a matched RDS/EFS checkpoint and verify application/data integrity.
-- Test the preserved ALB exercise and scoped helper with actual ECS behavior.
+- The preserved ALB exercise completed: HTTP 503 during target deregistration and
+  HTTP 302 after both targets recovered.
 - Test regional traffic cutover and optional DNS, then measure RTO/RPO and costs.
 - Review/delete residual resources, including manual snapshots and restored EFS.
 

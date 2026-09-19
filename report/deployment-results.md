@@ -68,13 +68,19 @@ the alternate DR stack, and the final plan reports **No changes**.
 
 ## What was not claimed as a successful test
 
-No regional failover, S3 object replication, restored EFS content, RTO, RPO, or
-recovery success-rate measurement is reported yet. The preserved course scripts
-were not run against the completed two-region stack. Those are the next controlled
-verification steps.
+S3 CRR was verified with a timestamped object; the replica reported
+`ReplicationStatus=REPLICA`. RDS automated-backup replication reported
+`Status=replicating`. The preserved application-level simulation also completed:
+the primary endpoint returned HTTP 503 after target deregistration, both targets
+were re-registered, both became healthy, and the endpoint returned HTTP 302.
+The measured restoration upper bound was 125 seconds. No regional DNS failover,
+restored EFS content, or RPO data-write test has been performed.
+
+The detailed measurement is recorded in
+`report/recovery-measurements.csv` under test `APP-001`.
 
 ## Safe next step
 
-The final state is ready for controlled recovery testing. Keep the saved state
-private, complete the S3/RDS/EFS verification procedure, and capture RTO/RPO before
-running cleanup. Both Regions now contain billable resources.
+Keep the saved state private. Complete the RDS restore, EFS restore, and regional
+traffic-cutover tests before claiming full recovery success. Both Regions contain
+billable resources.
