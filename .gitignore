@@ -1,0 +1,26 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+crash.*.log
+*.tfplan
+
+# Secrets / credentials
+terraform.tfvars
+*.auto.tfvars
+*.tfvars.json
+.env
+.env.*
+aws_credentials*
+dr_config.txt
+*.pem
+*.key
+
+# macOS
+.DS_Store
+__MACOSX/
+
+# Archives
+*.zip
