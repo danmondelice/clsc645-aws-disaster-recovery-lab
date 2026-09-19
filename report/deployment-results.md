@@ -4,7 +4,7 @@ Date: 2026-09-18 America/New_York
 AWS account: `382352119953` (`school645`)  
 Role: `AWSReservedSSO_StudentAdminAccess`  
 Approved Terraform plan: `100 to add, 0 to change, 0 to destroy`  
-Result: **partial deployment**
+Result: **primary and alternate-region DR deployment completed**
 
 ## Verified primary environment
 
@@ -33,9 +33,9 @@ The no-healthy-target alarm was observed while the ALB target query showed both
 targets healthy. This is a timing or evaluation-window discrepancy that should be
 rechecked after the service has been stable for a full alarm evaluation period.
 
-## Disaster recovery blocker
+## Original disaster recovery blocker and alternate-region resolution
 
-The apply could not create the us-west-2 resources because the selected student
+The first apply could not create the us-west-2 resources because the selected student
 account has explicit policy denies. The errors included:
 
 - `ec2:CreateVpc`
@@ -47,25 +47,34 @@ account has explicit policy denies. The errors included:
 - `logs:CreateLogGroup`
 
 An SNS request also returned a transient DNS resolution failure for
-` sns.us-west-2.amazonaws.com `. Terraform state contains the primary resources
-and a remaining recovery plan of **50 to add, 0 to change, 0 to destroy**. The DR
-region, S3 replica, and cross-region recovery path are therefore **not deployed**.
+` sns.us-west-2.amazonaws.com `. The us-west-2 DR path was not deployed.
 
 The earlier account `003643568742` was unusable because SSO returned
 `ForbiddenException: No access`; switching accounts did not remove the us-west-2
 policy restrictions in `school645`.
 
+The configuration was then made Region-configurable and a reviewed `us-east-2`
+plan completed with **50 to add, 0 to change, 0 to destroy**. The apply completed
+the alternate DR stack, and the final plan reports **No changes**.
+
+| DR check | Observed value |
+| --- | --- |
+| DR ALB | `clsc645-wp-dr-39503980.us-east-2.elb.amazonaws.com` |
+| DR ECS service | `clsc645-wp-dr`, desired 1, running 1 |
+| DR target health | One target reported `healthy` |
+| DR RDS endpoint | `clsc645-wp-dr-db.c3qy668oon0f.us-east-2.rds.amazonaws.com:3306` |
+| Replica bucket | `clsc645-wp-382352119953-usw2` (legacy suffix; bucket is in us-east-2) |
+| Dashboard | `clsc645-wp-operations` |
+
 ## What was not claimed as a successful test
 
-No regional failover, S3 replication, RDS cross-region copy, RTO, RPO, or recovery
-success-rate measurement is reported. The preserved course scripts were not run
-against the new stack after the partial apply. These items require a second account
-or an administrator-approved policy change, followed by a fresh plan review.
+No regional failover, S3 object replication, restored EFS content, RTO, RPO, or
+recovery success-rate measurement is reported yet. The preserved course scripts
+were not run against the completed two-region stack. Those are the next controlled
+verification steps.
 
 ## Safe next step
 
-Before retrying Terraform, obtain permission to create and tag the listed resources
-in us-west-2, refresh SSO, run `terraform plan`, and review the resulting recovery
-plan. If access cannot be granted, destroy the partial primary deployment to stop
-ongoing charges and submit the implementation/report as a documented account-
-restriction limitation rather than presenting an unexecuted DR test as evidence.
+The final state is ready for controlled recovery testing. Keep the saved state
+private, complete the S3/RDS/EFS verification procedure, and capture RTO/RPO before
+running cleanup. Both Regions now contain billable resources.

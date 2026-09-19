@@ -6,6 +6,24 @@ variable "project_name" {
     error_message = "Use 4-20 lowercase letters, digits, or hyphens, starting with a letter and ending with a letter or digit."
   }
 }
+variable "dr_region" {
+  description = "AWS Region for the reduced-capacity disaster-recovery environment."
+  type        = string
+  default     = "us-west-2"
+  validation {
+    condition     = can(regex("^[a-z]{2}(-gov)?-[a-z]+-[0-9]+$", var.dr_region)) && var.dr_region != "us-east-1"
+    error_message = "Choose a distinct commercial or GovCloud DR Region; it must differ from us-east-1."
+  }
+}
+variable "dr_availability_zones" {
+  description = "Two enabled AZs in dr_region. Explicit values avoid restricted AZ discovery APIs."
+  type        = list(string)
+  default     = ["us-west-2a", "us-west-2b"]
+  validation {
+    condition     = length(var.dr_availability_zones) == 2 && var.dr_availability_zones[0] != var.dr_availability_zones[1]
+    error_message = "Provide two distinct availability zones in dr_region."
+  }
+}
 variable "wordpress_image" {
   description = "Explicit apache image tag/digest required; use the same image in both Regions. Pin a digest before deployment."
   type        = string

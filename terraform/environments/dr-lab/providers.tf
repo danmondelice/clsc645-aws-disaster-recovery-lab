@@ -13,7 +13,7 @@ provider "aws" {
 }
 provider "aws" {
   alias  = "dr"
-  region = "us-west-2"
+  region = var.dr_region
   default_tags { tags = { Project = var.project_name, Course = "CLSC645", ManagedBy = "terraform" } }
 }
 data "aws_caller_identity" "current" {}

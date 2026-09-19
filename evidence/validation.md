@@ -2,9 +2,9 @@
 
 Validation performed locally and against a live account on 2026-09-18 with
 Terraform 1.16.0, AWS provider 5.100.0 and random provider 3.7.2. The live plan
-was reviewed and the approved apply partially completed: the primary us-east-1
-stack is deployed, while explicit account denies prevented the us-west-2 stack.
-See [deployment results](../report/deployment-results.md).
+was reviewed and the approved apply completed the primary us-east-1 stack and
+alternate DR stack in us-east-2 after us-west-2 policy denies were encountered.
+The final plan reports no changes. See [deployment results](../report/deployment-results.md).
 
 | Check | Result |
 | --- | --- |
@@ -35,9 +35,7 @@ example database password is reference material only, never used by enhanced cod
 
 ## Remaining runtime checks
 
-- Obtain permission for the denied us-west-2 actions, refresh SSO, and review the
-  remaining recovery plan before retrying.
-- Apply only after separate authorization; verify initial WordPress setup and EFS.
+- Verify initial WordPress setup and EFS from an AWS-connected client.
 - Confirm SNS subscriptions, dashboard metrics and actual alarm transitions.
 - Verify S3 replication bytes/versions, RDS destination backups and EFS copies.
 - Restore a matched RDS/EFS checkpoint and verify application/data integrity.

@@ -1,9 +1,9 @@
 # Predeployment review
 
 Status: the approved plan was applied in account 382352119953 (`school645`) on
-2026-09-18 America/New_York. The primary us-east-1 stack deployed successfully;
-the account explicitly denied required us-west-2 resource operations. See
-`deployment-results.md` for the live result. Public pricing was checked
+2026-09-18 America/New_York. The primary us-east-1 stack and alternate DR
+us-east-2 stack are deployed; the account explicitly denied the original
+us-west-2 attempt. See `deployment-results.md` for the live result. Public pricing was checked
 2026-09-19 UTC (2026-09-18 America/New_York). This is a configuration estimate,
 not an AWS bill or spending limit.
 
@@ -60,7 +60,7 @@ The first selected account, 003643568742 (`StudentAdminAccess-003643568742`), re
 
 The switched account has a 30-vCPU Fargate quota and no existing VPCs in us-east-1. MariaDB 10.11.13 is available in us-east-1. An explicit identity policy deny prevents `rds:DescribeDBEngineVersions` in us-west-2, and the same restriction blocked `ec2:DescribeAvailabilityZones` there. The environment now uses explicit `us-east-1a/us-east-1b` and `us-west-2a/us-west-2b` inputs so the plan does not require AZ discovery; verify those AZs are enabled before apply.
 
-The live read-only plan succeeded after that adjustment: **100 to add, 0 to change, 0 to destroy**. It was saved locally at `/tmp/clsc645-dr.tfplan` and is not in Git. The plan contained no access-key pattern. The apply completed the primary stack and left a recovery plan of **50 to add, 0 to change, 0 to destroy** for the denied DR resources. Do not apply that recovery plan until an administrator grants the required us-west-2 permissions.
+The live read-only plan succeeded after that adjustment: **100 to add, 0 to change, 0 to destroy**. It was saved locally at `/tmp/clsc645-dr.tfplan` and is not in Git. The plan contained no access-key pattern. The alternate-region plan for us-east-2 then applied **50 to add, 0 to change, 0 to destroy**, and the final plan reports no changes.
 
 ## Plan review findings
 

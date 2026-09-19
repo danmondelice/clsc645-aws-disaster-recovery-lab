@@ -19,7 +19,7 @@ resource "aws_sns_topic_subscription" "dr" {
 locals {
   monitoring_regions = [
     { region = "us-east-1", name = "Primary", infra = module.primary, ec2 = var.primary_ec2_instance_ids },
-    { region = "us-west-2", name = "DR", infra = module.dr, ec2 = var.dr_ec2_instance_ids }
+    { region = var.dr_region, name = "DR", infra = module.dr, ec2 = var.dr_ec2_instance_ids }
   ]
 }
 resource "aws_cloudwatch_dashboard" "this" {

@@ -24,7 +24,7 @@ module "dr" {
   providers              = { aws = aws.dr }
   name                   = "${var.project_name}-dr"
   vpc_cidr               = "10.20.0.0/16"
-  availability_zones     = ["us-west-2a", "us-west-2b"]
+  availability_zones     = var.dr_availability_zones
   desired_count          = var.dr_desired_count
   db_password            = random_password.database.result
   db_instance_class      = var.db_instance_class

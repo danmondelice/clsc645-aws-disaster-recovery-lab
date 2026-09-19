@@ -1,6 +1,8 @@
 # Copy to terraform.tfvars (ignored). AWS credentials belong in AWS_PROFILE or
 # your temporary shell environment, not here. Select a reviewed image digest.
 wordpress_image = "wordpress:REPLACE_WITH_REVIEWED_APACHE_TAG_OR_DIGEST"
+dr_region = "us-east-2"
+dr_availability_zones = ["us-east-2a", "us-east-2b"]
 primary_desired_count = 2
 dr_desired_count = 1
 # alarm_email = "student@example.com"

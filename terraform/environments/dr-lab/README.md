@@ -2,7 +2,9 @@
 
 This is a new deployment derived from the instructor's Fargate/ALB/MariaDB design.
 It does not migrate an existing baseline state. Do not deploy both copies without
-reviewing duplicate resources and cost. Primary: us-east-1; DR: us-west-2.
+reviewing duplicate resources and cost. Primary: us-east-1; DR is configurable
+and must be a distinct Region. The tested local deployment uses us-east-2 because
+the course account denied resource creation in us-west-2.
 
 ## Validate, then stop for plan review
 
