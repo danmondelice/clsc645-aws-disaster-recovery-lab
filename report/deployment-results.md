@@ -79,6 +79,11 @@ restored EFS content, or RPO data-write test has been performed.
 The detailed measurement is recorded in
 `report/recovery-measurements.csv` under test `APP-001`.
 
+The direct us-east-2 DR endpoint also returned HTTP 302 with one healthy target
+and an ACTIVE ECS service. An on-demand EFS backup completed in us-east-1, and its
+cross-region copy to the DR vault is still `RUNNING`; no EFS restore is claimed
+until that copy reaches `COMPLETED`.
+
 ## Safe next step
 
 Keep the saved state private. Complete the RDS restore, EFS restore, and regional
