@@ -3,11 +3,9 @@
 **Course:** CLSC 645 Cloud Infrastructure Planning and Design
 **Author:** [Student name]
 **Date:** [Submission date]
-**Status:** Implementation and validation package complete; primary deployment
-verified in us-east-1. The selected student account denied required us-west-2
-operations, so regional recovery measurements remain pending. See
-[live deployment results](deployment-results.md) and do not present the intended
-DR diagrams as evidence of deployed resources.
+**Status:** Implementation and validation package complete. Primary is deployed in
+us-east-1 and reduced-capacity DR is deployed in us-east-2. See
+[live deployment results](deployment-results.md) for evidence and limitations.
 
 ## 1. Purpose and recovery objectives
 
@@ -16,10 +14,10 @@ matter to the selected workload. Identify the consequences of outages and data l
 
 | Objective | Target set before testing | Observed result |
 | --- | --- | --- |
-| RTO: maximum acceptable service outage | TBD | Not measured |
-| RPO: maximum acceptable age of lost data | TBD | Not measured |
-| Recovery success rate | TBD | Not measured |
-| Deployment cost limit and operating duration | TBD | Not measured |
+| RTO: maximum acceptable service outage | 180 seconds for the controlled ALB test | 125-second upper bound |
+| RPO: maximum acceptable age of lost data | Object replication test interval | S3 object replicated; database write gap not measured |
+| Recovery success rate | 100% for completed controlled application test | 1 of 1 application recovery; regional failover not tested |
+| Deployment cost limit and operating duration | Student-account lab budget | Estimated core steady state $141.88/month before variable charges |
 
 Distinguish target RTO/RPO from observed restoration time and recovered-data gap.
 
@@ -28,9 +26,12 @@ Distinguish target RTO/RPO from observed restoration time and recovered-data gap
 [Inventory the instructor baseline after receiving its source. Explain what is
 preserved, what changes, and why each enhancement supports recovery.]
 
-**Figure 1. Primary Region architecture (us-east-1).** Pending verified design.
+**Figure 1. Primary Region architecture (us-east-1).** See the Mermaid diagram in
+[architecture.md](architecture.md); the deployed primary has two Fargate tasks,
+an ALB, private MariaDB, encrypted EFS, and CloudWatch alarms.
 
-**Figure 2. Disaster recovery Region architecture (us-west-2).** Pending verified design.
+**Figure 2. Disaster recovery Region architecture (us-east-2).** The deployed
+alternate Region uses one Fargate task, an ALB, MariaDB, EFS, and monitoring.
 
 [Show availability zones, network boundaries, ALB, compute, database, storage,
 monitoring, and relevant traffic paths. Label intended designs separately from
@@ -38,9 +39,11 @@ deployed configurations. Discuss reduced DR capacity and cost/performance trade-
 
 ## 3. Replication and backup strategy
 
-**Figure 3. S3 replication data flow.** Pending verified design.
+**Figure 3. S3 replication data flow.** A timestamped object reached the replica
+bucket with `ReplicationStatus=REPLICA`.
 
-**Figure 4. RDS cross-Region copy and restore data flow.** Pending verified design.
+**Figure 4. RDS cross-Region copy and restore data flow.** RDS automated-backup
+replication reported `replicating`; database restore timing remains future work.
 
 [Describe each data store, backup schedule, retention, destination, encryption,
 permissions, restore dependency, and verification method. Establish where WordPress
@@ -65,9 +68,12 @@ encryption, state protection, and account restrictions with code references.]
 | RDS DatabaseConnections | Connection behavior before, during, and after recovery |
 | RDS FreeStorageSpace | Available storage and observed trend |
 
-**Figure 5. CloudWatch dashboard.** Pending deployment screenshot.
+**Figure 5. CloudWatch dashboard.** `clsc645-wp-operations` exists and all eight
+regional alarms reported `OK` after recovery.
 
-**Figure 6. Alarm transition during the outage.** Pending test screenshot.
+**Figure 6. Alarm transition during the outage.** The no-healthy-target alarm
+returned to `OK` after target recovery; all eight regional alarms were `OK` during
+the final review.
 
 [For each widget/alarm, state Region, dimensions, units, statistic, period,
 evaluation window, missing-data behavior, and notification destination if configured.]
@@ -75,7 +81,8 @@ evaluation window, missing-data behavior, and notification destination if config
 ## 6. Recovery playbook and automation
 
 Complete each scenario with exact validated commands and expected outputs before
-executing it. Use shell code fences and explain command effects.
+executing it. The preserved application simulation produced HTTP 503 during target
+removal and HTTP 302 after target restoration.
 
 | Phase | Required procedure |
 | --- | --- |
@@ -87,9 +94,9 @@ executing it. Use shell code fences and explain command effects.
 | Failback | Define source of truth, reconcile writes, validate primary, and restore routing |
 | Cleanup | Inventory Terraform-managed and script-created resources, then remove authorized lab resources |
 
-[Describe manual gates, retry behavior, timeouts, logs, failure handling, and how
-automation avoids targeting unintended resources. Distinguish controlled regional
-failover from an actual AWS Region outage. Include partial-failure scenarios.]
+The scripts use explicit AWS profiles and target-group discovery. The application
+test is a controlled ALB failure, not an AWS Region outage. Regional recovery still
+requires restoring matched RDS/EFS checkpoints and switching an owned DNS zone.
 
 ## 7. Experiments and measured results
 
@@ -108,8 +115,9 @@ integrity checks. Keep failed and aborted attempts in the record.
 - Data loss = expected committed test records minus verified recovered records;
   separately verify uploaded media with checksums.
 
-**Figure 7. Recovery time by scenario and attempt.** Generate from measured data only;
-show target RTO alongside observations and identify unsuccessful attempts.
+**Figure 7. Recovery time by scenario and attempt.** APP-001 recorded a 125-second
+upper bound; DR-001 and EFS-001 validate components separately and are not DNS
+failover RTO measurements.
 
 [Compare application recovery and regional recovery independently. Explain database
 restore time, routing delay, capacity limitations, and integrity-check duration.]
@@ -118,9 +126,9 @@ restore time, routing delay, capacity limitations, and integrity-check duration.
 
 | Strategy | Resource/capacity assumptions | Estimated cost for stated duration | Measured RTO/RPO or untested status | Pricing source and date |
 | --- | --- | --- | --- | --- |
-| Backup and restore | TBD | TBD | Untested | TBD |
-| Reduced-capacity standby | TBD | TBD | Untested | TBD |
-| Active/active comparison | TBD | TBD | Untested | TBD |
+| Backup and restore | One primary stack; restore on demand | Included in core estimate | EFS restore completed; database restore untested | AWS public pricing checked 2026-09-19 |
+| Reduced-capacity standby | One DR Fargate task, ALB, RDS, EFS | About $141.88/month core estimate for both Regions | Direct DR HTTP 302; DNS failover untested | AWS public pricing checked 2026-09-19 |
+| Active/active comparison | Two full-capacity Regions | Higher compute, database, and transfer cost | Not implemented | Design comparison |
 
 [Separate estimates from actual billing. Include compute, databases, load balancers,
 storage/versions/snapshots, transfer, monitoring, DNS, and applicable networking costs.
@@ -128,11 +136,16 @@ State operating hours, currencies, pricing date, and scope of actual cost attrib
 
 ## 9. Lessons learned and limitations
 
-[For each finding, cite a test ID, describe expected versus observed behavior,
-identify the cause, and propose a concrete improvement. Address account restrictions,
-untested failure modes, recovery-point limitations, and security considerations.]
+The first apply exposed an account policy denying creation in us-west-2. Making the
+DR Region configurable allowed the same design to deploy in us-east-2. APP-001
+showed that the supplied recovery script restores ALB registration; DR-001 and
+EFS-001 confirmed standby reachability and encrypted file recovery. A future test
+should restore a database snapshot, freeze writes during paired checkpoints, and
+exercise Route 53 with an owned hosted zone. State and temporary credentials remain
+local and ignored.
 
 ## References
 
-[Add course materials and the official documentation actually used. Cite figures,
-pricing, technical claims, and adapted code consistently. Do not invent references.]
+[Add the UMGC course runbooks and official AWS documentation used for ECS, ALB, S3
+replication, RDS automated backups, AWS Backup, CloudWatch, and Route 53. Cite
+figures, pricing, technical claims, and adapted code consistently.]
