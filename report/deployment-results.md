@@ -8,7 +8,10 @@ Result: **partial deployment**
 
 ## Verified primary environment
 
-The us-east-1 stack reached a usable state before the regional policy failures:
+The us-east-1 stack reached a provisioned state before the regional policy
+failures. ECS and ALB target health were healthy; an independent local HTTP check
+could not resolve the ALB hostname from this workstation, so application
+accessibility still requires verification from an AWS-connected client.
 
 | Check | Observed value |
 | --- | --- |
@@ -21,6 +24,10 @@ The us-east-1 stack reached a usable state before the regional policy failures:
 | S3 source bucket | `clsc645-wp-382352119953-use1` |
 | CloudWatch dashboard | `clsc645-wp-operations` |
 | Alarm state | 5XX, ECS CPU, and RDS CPU `OK`; no-healthy-target alarm was `ALARM` during the check and requires investigation before a production test |
+
+The local `curl` check returned `Could not resolve host` and HTTP `000`; this is
+recorded as an unverified external connectivity check rather than a WordPress
+success.
 
 The no-healthy-target alarm was observed while the ALB target query showed both
 targets healthy. This is a timing or evaluation-window discrepancy that should be
