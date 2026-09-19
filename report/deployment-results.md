@@ -80,10 +80,10 @@ The detailed measurement is recorded in
 `report/recovery-measurements.csv` under test `APP-001`.
 
 The direct us-east-2 DR endpoint also returned HTTP 302 with one healthy target
-and an ACTIVE ECS service. An on-demand EFS backup completed in us-east-1 and its
-cross-region copy completed in the DR vault. An encrypted EFS restore validation
-job is currently `RUNNING`; no restored filesystem is claimed until AWS Backup
-returns a created resource ARN.
+and an ACTIVE ECS service. An on-demand EFS backup completed in us-east-1, its
+cross-region copy completed in the DR vault, and AWS Backup restored encrypted
+filesystem `fs-015ee999bbd95268d` in us-east-2. The temporary restored filesystem
+was verified as `available` and then deleted to avoid ongoing charges.
 
 ## Safe next step
 
