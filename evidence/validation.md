@@ -43,6 +43,8 @@ example database password is reference material only, never used by enhanced cod
 - Restore a matched RDS/EFS checkpoint and verify application/data integrity.
 - The preserved ALB exercise completed: HTTP 503 during target deregistration and
   HTTP 302 after both targets recovered.
+- The operations dashboard exists and all eight regional alarms report `OK` after
+  recovery.
 - Test regional traffic cutover and optional DNS, then measure RTO/RPO and costs.
 - Review/delete residual resources, including manual snapshots and restored EFS.
 

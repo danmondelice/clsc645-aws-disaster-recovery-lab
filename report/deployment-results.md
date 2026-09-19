@@ -66,6 +66,9 @@ the alternate DR stack, and the final plan reports **No changes**.
 | Replica bucket | `clsc645-wp-382352119953-usw2` (legacy suffix; bucket is in us-east-2) |
 | Dashboard | `clsc645-wp-operations` |
 
+The CloudWatch dashboard exists in us-east-1 and all four primary plus all four
+DR alarms currently report `OK`, including both no-healthy-target alarms.
+
 ## What was not claimed as a successful test
 
 S3 CRR was verified with a timestamped object; the replica reported
