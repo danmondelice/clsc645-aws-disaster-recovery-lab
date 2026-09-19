@@ -22,7 +22,7 @@ accessibility still requires verification from an AWS-connected client.
 | RDS | `clsc645-wp-primary-db`, status `available` |
 | RDS endpoint | `clsc645-wp-primary-db.cs7m2k68qplw.us-east-1.rds.amazonaws.com:3306` |
 | S3 source bucket | `clsc645-wp-382352119953-use1` |
-| CloudWatch dashboard | `clsc645-wp-operations` |
+| CloudWatch dashboard | `clsc645-wp-operations` was in the configuration output; live existence was not verified and it is absent from the post-failure Terraform state list |
 | Alarm state | 5XX, ECS CPU, and RDS CPU `OK`; no-healthy-target alarm was `ALARM` during the check and requires investigation before a production test |
 
 The local `curl` check returned `Could not resolve host` and HTTP `000`; this is
