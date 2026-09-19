@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars (ignored). AWS credentials belong in AWS_PROFILE or
+# your temporary shell environment, not here. Select a reviewed image digest.
+wordpress_image = "wordpress:REPLACE_WITH_REVIEWED_APACHE_TAG_OR_DIGEST"
+primary_desired_count = 2
+dr_desired_count = 1
+# alarm_email = "student@example.com"
+# enable_route53 = true
+# hosted_zone_id = "Z_REPLACE_ME"
+# domain_name = "wordpress.example.com"
+# dr_data_verified = true # only after actual restore and verification

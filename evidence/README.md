@@ -23,6 +23,20 @@ Review screenshots and logs for credentials before adding them to Git.
 - [ ] RTO measurement
 - [ ] RPO measurement
 - [ ] Final cost data
+- [ ] Primary Region architecture diagram with caption
+- [ ] DR Region architecture diagram with caption
+- [ ] S3 replication data-flow chart
+- [ ] RDS backup/copy/restore data-flow chart
+- [ ] Recovery performance chart from measured trials
+- [ ] Cost comparison table with dated sources and assumptions
+- [ ] Post-recovery database and media integrity checks
+- [ ] Recovery success rate, including unsuccessful attempts
+- [ ] Lessons learned linked to test evidence
+
+Use [the requirements map](../report/assignment-requirements.md) to check coverage
+and [the report template](../report/recovery-report.md) to assemble the submission.
+Record raw trial measurements in
+[recovery-measurements.csv](../report/recovery-measurements.csv).
 
 Record UTC timestamps for failure injection, detection, and verified recovery.
 For RPO, compare the last committed test record before failure with the latest

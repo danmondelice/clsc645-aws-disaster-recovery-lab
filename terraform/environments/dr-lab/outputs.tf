@@ -1,0 +1,16 @@
+output "primary_alb_dns" { value = module.primary.alb_dns }
+output "dr_alb_dns" { value = module.dr.alb_dns }
+output "primary_wordpress_url" { value = "http://${module.primary.alb_dns}" }
+output "dr_wordpress_url" { value = "http://${module.dr.alb_dns}" }
+output "primary_s3_bucket" { value = aws_s3_bucket.primary.id }
+output "replica_s3_bucket" { value = aws_s3_bucket.replica.id }
+output "primary_rds_endpoint" { value = module.primary.rds_endpoint }
+output "dr_rds_endpoint" { value = module.dr.rds_endpoint }
+output "cloudwatch_dashboard_name" { value = aws_cloudwatch_dashboard.this.dashboard_name }
+output "primary" { value = module.primary }
+output "dr" { value = module.dr }
+output "dr_backup_kms_key_arn" { value = aws_kms_key.dr_backup.arn }
+output "rds_backup_replication_arn" { value = try(aws_db_instance_automated_backups_replication.primary[0].id, null) }
+output "primary_backup_vault" { value = try(aws_backup_vault.primary[0].name, null) }
+output "dr_backup_vault" { value = try(aws_backup_vault.dr[0].name, null) }
+output "backup_role_arn" { value = try(aws_iam_role.backup[0].arn, null) }
