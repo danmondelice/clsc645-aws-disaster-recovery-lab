@@ -26,6 +26,14 @@ Distinguish target RTO/RPO from observed restoration time and recovered-data gap
 [Inventory the instructor baseline after receiving its source. Explain what is
 preserved, what changes, and why each enhancement supports recovery.]
 
+The primary remains in us-east-1 to preserve the instructor baseline and its
+original N. Virginia workflow. The DR design uses a separate Region and VPC to
+avoid a single-Region failure domain. The student account denied the required
+us-west-2 creates, so the same module was tested in us-east-2; this preserves
+regional separation while documenting an account-policy constraint. The DR task
+count is reduced to one to lower standby cost, while the primary uses two tasks
+across two Availability Zones.
+
 **Figure 1. Primary Region architecture (us-east-1).** See the Mermaid diagram in
 [architecture.md](architecture.md); the deployed primary has two Fargate tasks,
 an ALB, private MariaDB, encrypted EFS, and CloudWatch alarms.
