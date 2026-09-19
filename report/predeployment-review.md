@@ -58,3 +58,27 @@ The first selected account, 003643568742 (`StudentAdminAccess-003643568742`), re
 The switched account has a 30-vCPU Fargate quota and no existing VPCs in us-east-1. MariaDB 10.11.13 is available in us-east-1. An explicit identity policy deny prevents `rds:DescribeDBEngineVersions` in us-west-2, and the same restriction blocked `ec2:DescribeAvailabilityZones` there. The environment now uses explicit `us-east-1a/us-east-1b` and `us-west-2a/us-west-2b` inputs so the plan does not require AZ discovery; verify those AZs are enabled before apply.
 
 The live read-only plan succeeded after that adjustment: **100 to add, 0 to change, 0 to destroy**. It is saved locally at `/tmp/clsc645-dr.tfplan` and is not in Git. The plan contains no access-key pattern. Review actual changes and service limitations; stop before apply.
+
+## Plan review findings
+
+- Two primary tasks and one DR task are configured; both Regions receive an ALB,
+  single-AZ `db.t3.micro` MariaDB instance, EFS file system, and CloudWatch logs.
+- RDS is private (`publicly_accessible=false`) with seven-day automated retention.
+  The lab cleanup setting intentionally uses `skip_final_snapshot=true` and
+  `delete_automated_backups=true`; capture required recovery evidence before cleanup.
+- Fargate tasks receive public IPs because no NAT gateway is provisioned. The task
+  security group accepts HTTP only from its ALB; database and EFS ingress remains
+  security-group scoped. Public IPv4 and transfer charges apply.
+- Both S3 buckets have versioning, encryption, public-access blocks, and
+  `force_destroy=false`; cleanup must remove object versions explicitly.
+- Backup vaults also use `force_destroy=false`; recovery points must be removed
+  before Terraform destroy can delete the vaults.
+- The plan creates two IAM roles for ECS per Region, an S3 replication role, a
+  backup role with AWS managed backup policies, a destination KMS key, two SNS
+  topics, one dashboard, and eight metric alarms.
+- Route 53 is absent because `enable_route53=false`; no domain is required for
+  this deployment. The plan has no destroy or replacement actions.
+
+The core steady-state estimate is approximately **$4.66/day** before EFS, backup,
+S3, LCU, logs, KMS, transfer, and other usage charges. This is a planning estimate,
+not an AWS bill or spending limit.
