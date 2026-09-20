@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>recovery-report</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1
+id="establishing-infrastructure-resilience-wordpress-disaster-recovery">Establishing
+Infrastructure Resilience: WordPress Disaster Recovery</h1>
+<p><strong>Course:</strong> CLSC 645 Cloud Infrastructure Planning and
+Design <strong>Author:</strong> [Student name] <strong>Date:</strong>
+[Submission date] <strong>Status:</strong> Implementation and validation
+package complete. Primary is deployed in us-east-1 and reduced-capacity
+DR is deployed in us-east-2. See <a href="deployment-results.md">live
+deployment results</a> for evidence and limitations.</p>
+<h2 id="purpose-and-recovery-objectives">1. Purpose and recovery
+objectives</h2>
+<p>[Explain why restoring service, recovering application data, and
+verifying integrity matter to the selected workload. Identify the
+consequences of outages and data loss.]</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Objective</th>
+<th>Target set before testing</th>
+<th>Observed result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RTO: maximum acceptable service outage</td>
+<td>180 seconds for the controlled ALB test</td>
+<td>125-second upper bound</td>
+</tr>
+<tr>
+<td>RPO: maximum acceptable age of lost data</td>
+<td>Object replication test interval</td>
+<td>S3 object replicated; database write gap not measured</td>
+</tr>
+<tr>
+<td>Recovery success rate</td>
+<td>100% for completed controlled application test</td>
+<td>1 of 1 application recovery; regional failover not tested</td>
+</tr>
+<tr>
+<td>Deployment cost limit and operating duration</td>
+<td>Student-account lab budget</td>
+<td>Estimated core steady state $141.88/month before variable
+charges</td>
+</tr>
+</tbody>
+</table>
+<p>Distinguish target RTO/RPO from observed restoration time and
+recovered-data gap.</p>
+<h2 id="baseline-and-regional-architecture">2. Baseline and regional
+architecture</h2>
+<p>[Inventory the instructor baseline after receiving its source.
+Explain what is preserved, what changes, and why each enhancement
+supports recovery.]</p>
+<p>The primary remains in us-east-1 to preserve the instructor baseline
+and its original N. Virginia workflow. The DR design uses a separate
+Region and VPC to avoid a single-Region failure domain. The student
+account denied the required us-west-2 creates, so the same module was
+tested in us-east-2; this preserves regional separation while
+documenting an account-policy constraint. The DR task count is reduced
+to one to lower standby cost, while the primary uses two tasks across
+two Availability Zones.</p>
+<p><strong>Figure 1. Primary Region architecture (us-east-1).</strong>
+See the Mermaid diagram in <a
+href="architecture.md">architecture.md</a>; the deployed primary has two
+Fargate tasks, an ALB, private MariaDB, encrypted EFS, and CloudWatch
+alarms.</p>
+<p><strong>Figure 2. Disaster recovery Region architecture
+(us-east-2).</strong> The deployed alternate Region uses one Fargate
+task, an ALB, MariaDB, EFS, and monitoring.</p>
+<p>[Show availability zones, network boundaries, ALB, compute, database,
+storage, monitoring, and relevant traffic paths. Label intended designs
+separately from deployed configurations. Discuss reduced DR capacity and
+cost/performance trade-offs.]</p>
+<h2 id="replication-and-backup-strategy">3. Replication and backup
+strategy</h2>
+<p><strong>Figure 3. S3 replication data flow.</strong> A timestamped
+object reached the replica bucket with
+<code>ReplicationStatus=REPLICA</code>.</p>
+<p><strong>Figure 4. RDS cross-Region copy and restore data
+flow.</strong> RDS automated-backup replication reported
+<code>replicating</code>; database restore timing remains future
+work.</p>
+<p>[Describe each data store, backup schedule, retention, destination,
+encryption, permissions, restore dependency, and verification method.
+Establish where WordPress uploads live and how they are recovered.
+Record completed destination snapshots and the selected recovery point.
+Explain observed replication lag and limitations.]</p>
+<h2 id="infrastructure-as-code-and-security">4. Infrastructure as code
+and security</h2>
+<p>[Explain module boundaries, provider aliases, inputs/outputs,
+baseline preservation, and validation. Include short Terraform excerpts
+from the implemented repository using hcl code fences. Explain
+credential handling, IAM scope, security groups, encryption, state
+protection, and account restrictions with code references.]</p>
+<h2 id="monitoring-and-alerting">5. Monitoring and alerting</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Evidence to explain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ALB HealthyHostCount / UnHealthyHostCount</td>
+<td>Target availability and zero-healthy-target alarm</td>
+</tr>
+<tr>
+<td>ALB 5XX errors</td>
+<td>Exact metric name, error source, threshold, and alarm
+transition</td>
+</tr>
+<tr>
+<td>EC2 CPUUtilization</td>
+<td>Instance dimensions and high-CPU threshold</td>
+</tr>
+<tr>
+<td>RDS CPUUtilization</td>
+<td>Database dimensions and high-CPU threshold</td>
+</tr>
+<tr>
+<td>RDS DatabaseConnections</td>
+<td>Connection behavior before, during, and after recovery</td>
+</tr>
+<tr>
+<td>RDS FreeStorageSpace</td>
+<td>Available storage and observed trend</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Figure 5. CloudWatch dashboard.</strong>
+<code>clsc645-wp-operations</code> exists and all eight regional alarms
+reported <code>OK</code> after recovery.</p>
+<p><strong>Figure 6. Alarm transition during the outage.</strong> The
+no-healthy-target alarm returned to <code>OK</code> after target
+recovery; all eight regional alarms were <code>OK</code> during the
+final review.</p>
+<p>[For each widget/alarm, state Region, dimensions, units, statistic,
+period, evaluation window, missing-data behavior, and notification
+destination if configured.]</p>
+<h2 id="recovery-playbook-and-automation">6. Recovery playbook and
+automation</h2>
+<p>Complete each scenario with exact validated commands and expected
+outputs before executing it. The preserved application simulation
+produced HTTP 503 during target removal and HTTP 302 after target
+restoration.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Required procedure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preconditions</td>
+<td>Verify account/Region, approved scope, backups, permissions, and
+primary/DR health</td>
+</tr>
+<tr>
+<td>Detection</td>
+<td>Identify alarm, affected resources, failure scope, and start
+timestamp</td>
+</tr>
+<tr>
+<td>Application outage</td>
+<td>Run preserved setup and backup scripts; select intended ALB;
+simulate and recover</td>
+</tr>
+<tr>
+<td>Regional recovery</td>
+<td>Choose destination recovery point; restore data; configure
+application; verify DR; switch traffic</td>
+</tr>
+<tr>
+<td>Integrity checks</td>
+<td>Verify database records, uploaded media, login, and read/write
+operations</td>
+</tr>
+<tr>
+<td>Failback</td>
+<td>Define source of truth, reconcile writes, validate primary, and
+restore routing</td>
+</tr>
+<tr>
+<td>Cleanup</td>
+<td>Inventory Terraform-managed and script-created resources, then
+remove authorized lab resources</td>
+</tr>
+</tbody>
+</table>
+<p>The scripts use explicit AWS profiles and target-group discovery. The
+application test is a controlled ALB failure, not an AWS Region outage.
+Regional recovery still requires restoring matched RDS/EFS checkpoints
+and switching an owned DNS zone.</p>
+<h2 id="experiments-and-measured-results">7. Experiments and measured
+results</h2>
+<p>Record every attempt in <a
+href="recovery-measurements.csv">recovery-measurements.csv</a>. Define
+success before each trial: endpoint accessibility plus application and
+data integrity checks. Keep failed and aborted attempts in the
+record.</p>
+<ul>
+<li>Observed restoration time = verified service-restoration timestamp
+minus failure-injection timestamp; also record first observed
+unavailability.</li>
+<li>Detection delay = detection timestamp minus failure-injection
+timestamp.</li>
+<li>Recovery execution time = verified restoration minus recovery-start
+timestamp.</li>
+<li>Observed recovered-data gap = failure timestamp minus the latest
+pre-failure committed test record recovered. State test-write frequency
+and clock limitations.</li>
+<li>Recovery success rate = successful attempts / all attempted
+recoveries × 100%; disclose counts and classification of aborted
+attempts.</li>
+<li>Data loss = expected committed test records minus verified recovered
+records; separately verify uploaded media with checksums.</li>
+</ul>
+<p><strong>Figure 7. Recovery time by scenario and attempt.</strong>
+APP-001 recorded a 125-second upper bound; DR-001 and EFS-001 validate
+components separately and are not DNS failover RTO measurements.</p>
+<p>[Compare application recovery and regional recovery independently.
+Explain database restore time, routing delay, capacity limitations, and
+integrity-check duration.]</p>
+<h2 id="cost-and-performance-trade-offs">8. Cost and performance
+trade-offs</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Resource/capacity assumptions</th>
+<th>Estimated cost for stated duration</th>
+<th>Measured RTO/RPO or untested status</th>
+<th>Pricing source and date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backup and restore</td>
+<td>One primary stack; restore on demand</td>
+<td>Included in core estimate</td>
+<td>EFS restore completed; database restore untested</td>
+<td>AWS public pricing checked 2026-09-19</td>
+</tr>
+<tr>
+<td>Reduced-capacity standby</td>
+<td>One DR Fargate task, ALB, RDS, EFS</td>
+<td>About $141.88/month core estimate for both Regions</td>
+<td>Direct DR HTTP 302; DNS failover untested</td>
+<td>AWS public pricing checked 2026-09-19</td>
+</tr>
+<tr>
+<td>Active/active comparison</td>
+<td>Two full-capacity Regions</td>
+<td>Higher compute, database, and transfer cost</td>
+<td>Not implemented</td>
+<td>Design comparison</td>
+</tr>
+</tbody>
+</table>
+<p>[Separate estimates from actual billing. Include compute, databases,
+load balancers, storage/versions/snapshots, transfer, monitoring, DNS,
+and applicable networking costs. State operating hours, currencies,
+pricing date, and scope of actual cost attribution.]</p>
+<h2 id="lessons-learned-and-limitations">9. Lessons learned and
+limitations</h2>
+<p>The first apply exposed an account policy denying creation in
+us-west-2. Making the DR Region configurable allowed the same design to
+deploy in us-east-2. APP-001 showed that the supplied recovery script
+restores ALB registration; DR-001 and EFS-001 confirmed standby
+reachability and encrypted file recovery. A future test should restore a
+database snapshot, freeze writes during paired checkpoints, and exercise
+Route 53 with an owned hosted zone. State and temporary credentials
+remain local and ignored.</p>
+<h2 id="references">References</h2>
+<p>[Add the UMGC course runbooks and official AWS documentation used for
+ECS, ALB, S3 replication, RDS automated backups, AWS Backup, CloudWatch,
+and Route 53. Cite figures, pricing, technical claims, and adapted code
+consistently.]</p>
+</body>
+</html>

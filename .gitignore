@@ -24,3 +24,11 @@ __MACOSX/
 
 # Archives
 *.zip
+
+# Local diagnostics may contain credentials or sensitive infrastructure details
+terraform.log
+terraform-debug-info-*.txt
+*.tfplan.json
+evidence/raw/
+__pycache__/
+*.pyc

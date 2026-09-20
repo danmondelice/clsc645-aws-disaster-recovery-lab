@@ -1,0 +1,14 @@
+{
+  "aws-wp-tf-v5/ecs.tf": "d50dd458865070dfe4ced79da866469c18dafe4b36344c677a1d09ce7fa40d13",
+  "aws-wp-tf-v5/outputs.tf": "ace67b45216fadffaa5a2d137a52568b88aec4902a02b5425e20b5a4f73fd7b9",
+  "aws-wp-tf-v5/security-groups.tf": "b890fb5e2037c2fca8faa05b89addf525be4f1544b87f89025502d956360f04f",
+  "aws-wp-tf-v5/terraform-debug.sh": "153f23e4c8ff84900e20cede5aa09f7f9a7d2baf4939e03b6cd48813426d5016",
+  "aws-wp-tf-v5/check-aws-credentials.sh": "291665a0ca2e97a558e4b5bbfa727d7eb057fbcb94be017144609ff9929a9ad6",
+  "aws-wp-tf-v5/templates.tf": "35466149201101002165bb2aee4d53863582f84c79ec6bb674f06af3e82eb1d5",
+  "aws-wp-tf-v5/aws.tf": "fa383c851cd35132022a235236698012f0bceac833c896bb9bd065b8f050d2e8",
+  "aws-wp-tf-v5/variables.tf": "e3fd474a7253349ccc7a3c48519fd9882164697c1bd9ab8497afc7bbc50f7425",
+  "aws-wp-tf-v5/alb.tf": "747f69660c98b54ffffd9d087cea4fa225e1559035a7538a19da93c2cf013df2",
+  "aws-wp-tf-v5/rds.tf": "94e528419f3d9c4317692da211c7cc2b8c76b0d1d75f0a95271fe9c58bd5c58c",
+  "aws-wp-tf-v5/vpc.tf": "09d78e12fb939159739265886c1707bd6041773aae2fb1f801152fd99cba0d9e",
+  "aws-wp-tf-v5/task-definitions/wordpress.json": "10741a2f202a7a2ebb47affc853ca7dc13bdae9ec27914737d5b08a6dbfc9fce"
+}
